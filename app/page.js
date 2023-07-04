@@ -1,6 +1,6 @@
 const Home = () => (
   <div>
-    <h1>12345</h1>
+    <h1 className=" text-2xl font-bold underline">Hello World</h1>
   </div>
 );
 
