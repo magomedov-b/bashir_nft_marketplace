@@ -11,8 +11,10 @@ const RootLayout = ({ children }) => (
     <body>
       <ThemeProvider attribute="class">
         <div className='dark:bg-nft-dark bg-white min-h-screen'>
-          <Navbar/>
-          {children}
+          <Navbar />
+          <div className="pt-65">
+            {children}
+          </div>
           <Footer/>
         </div>
         <Script src="https://kit.fontawesome.com/92f97cdb9f.js" crossOrigin="anonymous"/>
