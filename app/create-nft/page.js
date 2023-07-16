@@ -10,6 +10,9 @@ import images from '@/assets';
 
 const CreateNFT = () => {
   const [fileUrl, setFileUrl] = useState(null);
+
+  const [formInput, setFormInput] = useState({price: '', name:'', description: ''})
+
   const { theme } = useTheme();
 
   const onDrop = useCallback(() => {
@@ -20,6 +23,8 @@ const CreateNFT = () => {
     accept: 'image/*',
     maxSize: 5000000,
   })
+
+  console.log(formInput);
 
   const fileStyle = useMemo(() => (
     `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed
@@ -67,8 +72,28 @@ const CreateNFT = () => {
           inputType="input"
           title="Name"
           placeholder="NFT name"
-          handleClick={() => {}}
+          handleClick={(e) => {setFormInput({ ...formInput, name: e.target.value})}}
         />
+        <Input
+          inputType="textarea"
+          title="Description"
+          placeholder="NFT Description"
+          handleClick={(e) => {setFormInput({ ...formInput, description: e.target.value})}}
+        />
+        <Input
+          inputType="number"
+          title="Price"
+          placeholder="NFT Price"
+          handleClick={(e) => {setFormInput({ ...formInput, price: e.target.value})}}
+        />
+
+        <div className="mt-7 w-full flex justify-end">
+          <Button
+            btnName="Create NFT"
+            classStyles="rounded-xl"
+            handleClick={() => {}}
+          />
+        </div>
       </div>
     </div>
   )
