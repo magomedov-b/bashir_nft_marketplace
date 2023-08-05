@@ -6,14 +6,15 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 
+import { NFTContext } from "@/context/NFTContext";
 import images from "../assets";
-import { Button } from './';
+import { Button } from './';;
 
 const MenuItems = ({ isMobile, active, setActive }) => {
   const generateLink = (i) => {
     switch (i) {
       case 0: return '/'
-      case 1: return '/created-nfts';
+      case 1: return '/listed-nfts';
       case 2: return '/my-nfts';
       default: return '/';
     };
@@ -38,22 +39,21 @@ const MenuItems = ({ isMobile, active, setActive }) => {
 };
 
 const ButtonGroup = ({ setActive, router }) => {
-  const hasConnected = true;
-  return hasConnected ? (
+  const { connectWallet, currentAccount } = useContext(NFTContext);
+  return currentAccount ? (
     <Button
       btnName="Create"
-      classStyles="mx-2 rounded-xl" 
+      classStyles="mx-2 rounded-xl"
       handleClick={() => {
         setActive('');
-
         router.push('/create-nft');
       }}
       />
   ) : (
     <Button
       btnName="Connect"
-      classStyles="mx-2 rounded-xl" 
-      handleClick={() => {}}
+      classStyles="mx-2 rounded-xl"
+      handleClick={connectWallet}
     />
   );
 };
@@ -146,7 +146,7 @@ const Navbar = () => {
               className={theme === 'light' ?  'filter invert' : ''}
             />
           )}
-        
+
         {isOpen && (
           <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">
             <div className="flex-1 p-4">

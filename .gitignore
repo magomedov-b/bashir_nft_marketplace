@@ -34,3 +34,4 @@ typechain
 #Hardhat files
 cache
 artifacts
+/SECRET_KEYS.js
