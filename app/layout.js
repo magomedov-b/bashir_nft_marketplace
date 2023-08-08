@@ -10,7 +10,7 @@ import './globals.css';
 const RootLayout = ({ children }) => (
 
   <html lang="en" suppressHydrationWarning>
-    <body>
+    <body suppressHydrationWarning={true}>
     <NFTProvider>
       <ThemeProvider attribute="class">
         <div className='dark:bg-nft-dark bg-white min-h-screen'>
