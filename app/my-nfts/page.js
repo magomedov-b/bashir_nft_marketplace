@@ -11,7 +11,15 @@ import {shortenAddress} from "@/utils/shortenAddress";
 const MyNFTs = () => {
     const {fetchMyNFTsOrListedNFTs, currentAccount} = useContext(NFTContext);
   const [nfts, setNfts] = useState([]);
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        fetchMyNFTsOrListedNFTs()
+            .then((items) => {
+                setNfts(items);
+                setIsLoading(false);
+            });
+    }, []);
 
     if (isLoading) {
         return (
@@ -48,7 +56,7 @@ const MyNFTs = () => {
                       SearchBar
                   </div>
                   <div className="mt-3 w-fullflex flex-wrap">
-                      {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft}/>)}
+                      {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} onProfilePage/>)}
                   </div>
               </div>
           )}
