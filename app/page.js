@@ -5,9 +5,11 @@ import images from "@/assets"
 import { makeId } from "@/utils/makeId";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { getCreators } from "@/utils/getTopCreators";
 
 import { NFTContext } from '@/context/NFTContext';
 import dynamic from "next/dynamic";
+import {shortenAddress} from "@/utils/shortenAddress";
 
 const Home = () => {
   const { fetchNFTs } = useContext(NFTContext);
@@ -41,11 +43,11 @@ const Home = () => {
     const { current } = scrollRef;
     const { current: parent } = parentRef;
     if (current?.scrollWidth >= parent?.offsetWidth) {
-      setHideButtons(false)
+      setHideButtons(false);
     } else {
       setHideButtons(true);
     }
-  }
+  };
 
   useEffect(() => {
     isScrollable();
@@ -53,7 +55,10 @@ const Home = () => {
     return () => {
       window.removeEventListener('resize', isScrollable);
     }
-  },)
+  });
+
+  const topCreators = getCreators(nfts);
+  topCreators.reverse();
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
@@ -73,15 +78,24 @@ const Home = () => {
             ref={parentRef}
           >
             <div className="flex flex-row w-max overflow-x-scroll no-scrollbar select-none" ref={scrollRef}>
-              {[6, 7, 8, 9, 10].map((i) => (
+              {topCreators.map((creator,i) => (
                 <CreatorCard
-                  key={`creator-${i}`}
-                  rank={i}
-                  creatorImage={images[`creator${i}`]}
-                  creatorName={`0x${makeId(3)}...${makeId(4)}`}
-                  creatorEths={10 - i * 0.5}
+                  key={creator.seller}
+                  rank={i + 1}
+                  creatorImage={images[`creator${i + 1}`]}
+                  creatorName={shortenAddress(creator.seller)}
+                  creatorEths={creator.sum}
                 />
               ))}
+              {/*{[6, 7, 8, 9, 10].map((i) => (*/}
+              {/*    <CreatorCard*/}
+              {/*        key={`creator-${i}`}*/}
+              {/*        rank={i}*/}
+              {/*        creatorImage={images[`creator${i}`]}*/}
+              {/*        creatorName={`0x${makeId(3)}...${makeId(4)}`}*/}
+              {/*        creatorEths={10 - i * 0.5}*/}
+              {/*    />*/}
+              {/*))}*/}
               {!hideButtons && (
                 <>
                   <div onClick={() => handleScroll('left')} className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 cursor-pointer left-0">
