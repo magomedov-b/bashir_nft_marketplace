@@ -40,7 +40,7 @@ const PaymentBodyCmp = ({nft, nftCurrency}) => (
 )
 
 const NFTDetails = () => {
-  const { currentAccount, nftCurrency, buyNFT } = useContext(NFTContext);
+  const { currentAccount, nftCurrency, buyNFT, isLoadingNFT } = useContext(NFTContext);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -133,6 +133,19 @@ const NFTDetails = () => {
             }
         </div>
       </div>
+      {isLoadingNFT && (
+          <Modal
+              header="Buying NFT..."
+              body={(
+                  <div className="flexCenter flex-col text-center">
+                    <div className="relative w-52 h-52">
+                      <Loader/>
+                    </div>
+                  </div>
+              )}
+              handleClose={() => setPaymentModal(false)}
+          />
+      )}
 
       {paymentModal && (
         <Modal

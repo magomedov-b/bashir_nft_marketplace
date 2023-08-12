@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useEffect } from "react";
 import Web3Modal from 'web3modal';
 import { ethers } from "ethers";
@@ -7,8 +6,15 @@ import axios from 'axios';
 import  {create as ipfsHttpClient} from 'ipfs-http-client';
 
 import { MarketAddress, MarketAddressABI } from "./constants";
-import {PROJECT_ID} from "@/SECRET_KEYS";
-import {PROJECT_SECRET} from "@/SECRET_KEYS";
+import {configDotenv} from "dotenv";
+require('dotenv').config();
+console.log(process.env)
+
+const PROJECT_ID = process.env.REACT_APP_PROJECT_ID;
+const PROJECT_SECRET = process.env.REACT_APP_PROJECT_SECRET;
+
+
+
 
 
 const auth = `Basic ${Buffer.from(`${PROJECT_ID}:${PROJECT_SECRET}`).toString('base64')}`;
@@ -21,8 +27,6 @@ const client = ipfsHttpClient({
         authorization: auth,
     },
 });
-const dedicatedEndPoint = 'bashir';
-
 
 const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress, MarketAddressABI, signerOrProvider);
 
@@ -30,6 +34,7 @@ export const NFTContext = React.createContext();
 
 export const NFTProvider = ({ children }) => {
     const [currentAccount, setCurrentAccount] = useState('');
+    const [isLoadingNFT, setIsLoadingNFT] = useState(false);
   const nftCurrency = 'ETH';
 
   const checkIfWalletIsConnected = async () => {
@@ -101,10 +106,12 @@ export const NFTProvider = ({ children }) => {
           ? await contract.createToken(url, price, {value: listingPrice.toString()})
           : await contract.resellToken(id, price,  {value: listingPrice.toString()});
 
+      setIsLoadingNFT(true);
       await transaction.wait();
   }
 
   const fetchNFTs = async () => {
+      setIsLoadingNFT(false);
       const provider = new ethers.providers.JsonRpcProvider();
       const contract = fetchContract(provider);
 
@@ -132,6 +139,7 @@ export const NFTProvider = ({ children }) => {
   }
 
   const fetchMyNFTsOrListedNFTs = async (type) => {
+      setIsLoadingNFT(false);
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
@@ -174,11 +182,13 @@ export const NFTProvider = ({ children }) => {
 
       const transaction = await contract.createMarketSale(nft.tokenId, { value: price});
 
+      setIsLoadingNFT(true);
       await transaction.wait();
+      setIsLoadingNFT(false);
   }
 
   return (
-      <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale }}>
+      <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale, isLoadingNFT }}>
           {children}
       </NFTContext.Provider>
   )
